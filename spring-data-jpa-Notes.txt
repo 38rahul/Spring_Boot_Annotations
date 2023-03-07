@@ -1,0 +1,268 @@
+What Problem Spring Data Jpa Solves ?
+
+--> If you use Hibernate to develop the DAO Layer then we need to write lot of boiler code.
+	By using Spring Data Jpa we can reduce a lot of code.
+	For Example we need to just create an Interface and extends Spring Data Jpa Interface
+	called as JpaRepository<>and just you need to pass Entity name, and primary key.
+	
+	--> we typically use jpa/Hibernate to develop the  Dao Layer to 
+	
+
+Spring Data Jpa
+----------------
+
+--> Reduce the amount of Boiler plate code require to implement data access object(DAO) Layer.
+Spring Data Jpa is not a jpa provider
+
+-------------------------------Basic Flow of Spring Data JPA ----------------------
+
+	This Diagram shows the basic flow at the time of accessing the Data from the data base table using Spring Data JPA
+	
+	we basically call jpaRepository methods from service Layer.
+	
+	
+	----------------------- Lec 3 --- Difference Between Hibernate and Spring Data JPA ---------------
+	
+	
+			Spring Data JPA  --> Spring data jpa is an Abstraction Layer on top of jpa to reduce the amount of boiler plate code 
+								  required to implement data access object(DAO)
+			
+			
+			
+			JPA  			--> JPA is just a specification(it doesn't have any implementation) that facilitates the Object Relational Mapping to manage relational 
+								Data in java Applications
+								--> it provides object relational Mapping feature
+								it means that instead of creating SQL statements we directly persist an Object into Relational Data base tables using JPA
+								
+			
+			
+			Hibernate        --> Hibernate is a jPA implement(it implements jpa specification). Hibernate internallly uses JDBC to communicate with DB
+			JDBC				 Hibernate generaes SQL query and executes using JDBC
+					
+			
+			
+			Database
+			
+			
+			------------------------Hibernate vs Spring Data JPA ---------------------
+			
+			
+		--> Hibernate is a java based ORM tool that provides a framework for mapping Application domain object to the relational data base tables and vice versa.
+		
+		-->Spring Data JPA is an Abstraction Layer on top of JPA to reduce the amount of boiler plate code required to implement Data Access Object(DAO) Layer.
+
+		
+		--> Hibernate is a JPA provider (it implements JPA specification ).
+		
+		--> Spring Data JPA is not a JPA provider. it simply hides the Java Persistence API (behind its repository abstraction)
+		
+		--> Spring Data JPA uses Hibernate as a Default JPA provider. (Spring Boot offers Spring Boot Starter Data JPA it internallly uses Hibernate a Default JPA provider)
+		--> Spring Data Jpa cannot work without a JPA provider.
+		
+		
+		
+		What is the problem Developer were facing and what solutiion Spring-boot-starter-data-jpa dependencies solves ???
+		--> consider we are developing a Spring boot Application without using this dependencies then  we need to Add lots of dependencies 
+			for example we need to add JPA dependencies , Hibernate Dependencies , Spring Data JPA dependencies and along with that we need to add couple
+			of Spring  Related  dependencies as well and as a Developer we need to manage the compatible version of all the dependencies.
+			That is where Developer manage All the things. 
+			Developer need to Add All the required Libraries to Develop All the persistance Layer , Repository Layer
+			and Developer need to manage the compatible version of All the libraries.
+			
+			-> That is where  Spring-boot-starter-data-jpa dependencies  introduced.
+			-> Spring Boot teams basically created this starter Dependencies and this dependency internallly manage All these Libraries and 
+				its compatible version.
+			-> We don't have to Add a lot of Libraries like jpa dependencies or hibernate etc.
+			it is like one stop shop for All the libraries to Develop the Repository Layer or the persistance Layer.
+			 
+			 create-only
+			 none
+			 update
+			 validate
+			 drop
+			 create-drop
+			 
+			 
+			 @Entity  -> Specifies that the class is an entity. This annotation is applied to the entity class.
+			 @Id
+			 @Entity ->  Specifies the mapped column for a persistent property or field. If no Column annotation is specified, the default values apply.
+			 
+			 
+			 --- 4 primary key Generation Strategy-----Primary key generation strategies AUTO, IDENTITY, SEQUENCE and TABLE
+			 1: GenerationType.AUTO
+			 2: GenerationType.IDENTITY
+			 3: GenerationType.SEQUENCE
+			 4: GenerationType.TABLE 
+			 
+			 GenerationType.AUTO
+			 -------------------
+				-> it is a default Generation type and it lets the persistance provider(Database vendor) choose the Generation strategy 
+				
+				--> Hibernate most of the time uses GenerationType.SEQUENCE as auto primar key Generation.
+			GenerationType.IDENTITY
+			------------------------
+				--> it reles on an Auto incremented data base column and let the data base generate the new value with each insert operation.
+			GenerationType.SEQUENCE
+			------------------------
+				--> 
+						@GeneratedValue(strategy = "GenerationType.SEQUENCE",
+						generator ="product_generator")
+						
+						@SequenceGenerator( name="product_generator",
+											sequenceName="product_sequence_name",
+											allocationSize=1
+										  )
+						)
+			-->GenerationType.SEQUENCE is to generate primary key values and uses a database sequence to generate unique values.
+			--> it requires additional Select statements to get next value from database sequence. But it has No performance impact on most of the Application.
+			
+			 
+			 GenerationType.TABLE 
+			 ----------------------
+				--> Rarely used
+				
+				
+				--------------------Start from Lecture 10 ---------------------
+				--------------Use Hibernate @CreationTimestamp and @UpdateTimestamp & Add Lombok-----------------------
+				
+				@CreationTimestamp--> this annotation will basically get the current time from JVM and then it will assign to the field
+				
+				@UpdateTimestamp  --> 
+				
+				
+				-----------------How to reduce Lombok Library to decrease the boiler Plate code------------------
+				
+				Lombok:  Project Lombok is a java library that automatically plugs into your editor and build tools, spicing up your java.
+						Never write another getter or equals method again, with one annotation your class has a fully featured builder,
+						Automate your logging variables, and much more.
+				
+				Boiler Plate code meaning --> getter setters, constructoors, toString method.
+				
+				
+				
+				
+		==============11 - Understanding important Repository Interfaces and It’s Hierarchy==================
+		
+		
+			Repository   				Interface
+			
+				extends
+			CrudRepository    			Interface
+			
+				extends
+			PagingAndSortingRepository   		Interface
+			
+				extends
+			JPARepositoryInterface
+			
+			--> Spring Data JPA provides a SimpleJpaRepository class it implements all the important methods.
+			
+			
+			@transactional
+			SimpleJpaRepository implements JPARepositoryImplementation
+			
+			JPARepositoryImplementation extends JpaRepository
+			
+			Question: what does Transactional mean ?
+			
+			
+		===================   #14 - save() Method | Save an Entity to the MySQL Database Table ================
+		
+		save()  if you are saving the entity then entityManager.persist() will be called.
+				save() method will internally call 
+				if you are updating the entity then entityManager.merge() will be called. 
+
+		findById().get()   ---> Optional<> method
+		
+		
+		saveAll()  --> allows us to save multiple entities to the DB.
+				   --> returns a list of iterable Objects.
+				   
+		findAll()   --> Retrieve All the Entities from Database table
+					--> returns list of iterable object
+					
+		
+		deleteById()  --> returns Nothing (void)
+						--> Delete an Entity by id from database
+		
+		
+		
+		==========================#20 - delete() =======================
+		
+		delete ()      --> Delete an entity from Database.
+					   --> it does not takes id as parameter. it takes whole entity as a parameter
+					   
+		void delete(T entity) -> it does not return anything.
+		
+		--> Always prefer deleteById instead of delete() method
+		--------------------------------------------------------
+		
+		
+		deleteAll()  --> Allows us to delete All the entries from the database table.
+		
+		void deleteAll() --> returns nothing
+		
+		------------------------
+		
+		long count()  --> count the number of records exists in the database tables.
+					  --> return tye is long.
+	
+		
+		 booleanexistsById(ID id) -->> returns boolean (true or false)
+					  --> check if the record exists by id in the database table
+					  
+					  
+					  
+					  
+	
+	
+	==================================Rest Api =====================
+	
+	java --version
+javac --version
+
+
+What is Rest ??
+Representational State Transfer.
+State means --> data
+Representational means formats (such as xml, json, yaml, html etc)
+(XML and JSON, so these two data formats are widely used )
+Transfer means:  carry data between consumer and provider using HTTP protocol
+
+-->  A service provider is the one who provides the services that is web services.
+
+--> the Client basically sends an HTTP request to the server and server, basically process the request and 
+	it will send a response back to the client.
+--> The client and server should use as HTTP protocol for communication.
+
+--> Service provider or server is the one who exposes or provides the web services and consumer
+	or client is the one who consumes the web services.
+	
+Stateless -->  no data should be stored on the server during the processing of HTTP request
+			   the state of the session should be stored at the client's end.
+			   
+--> There is no session data stored at the server side.
+
+
+--> Spring Boot provides Spring Boot starter web dependency that we can use to develop the RESTFul Web services. 
+	And this dependency internally provides Apache Tomcat as a default embedded container so that we can able to run our 
+	Spring Boot application in a development environment.
+	
+
+	
+	
+			
+			
+		
+					   
+		
+		
+		
+		
+		
+		
+				
+				
+				
+				
+				
